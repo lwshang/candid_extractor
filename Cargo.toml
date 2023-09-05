@@ -14,5 +14,5 @@ quote = "1"
 syn = { version = "2", features = ["parsing", "full", "extra-traits"] }
 
 [[example]]
-name = "gen_mock_wat"
+name = "generate_mock_wat"
 path = "util/generate_mock_wat.rs"
