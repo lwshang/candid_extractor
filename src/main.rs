@@ -1,18 +1,9 @@
 use std::path::Path;
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use wasmtime::*;
 
-static IC0: &str = r#"(module
-    (func (export "msg_reply"))
-    (func (export "debug_print") (param i32  i32))
-    (func (export "trap") (param i32  i32))
-    (func (export "msg_caller_size") (result i32) i32.const 0)
-    (func (export "msg_caller_copy") (param i32 i32 i32))
-    (func (export "msg_reply_data_append") (param i32 i32))
-    (func (export "msg_arg_data_size") (result i32) i32.const 0)
-    (func (export "msg_arg_data_copy") (param i32 i32 i32))
-)"#;
+static IC0: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/ic_mock.wat"));
 
 fn generate_candid<P>(wasm_path: P) -> Result<String>
 where
@@ -48,7 +39,12 @@ where
 }
 
 fn main() -> Result<()> {
-    let c = generate_candid("target/wasm32-unknown-unknown/release/canister.wasm")?;
+    let args: Vec<_> = std::env::args().collect();
+    if args.len() != 2 {
+        // The first arg will the name of current binary.
+        bail!("Expecting one argument: path to the canister WASM file");
+    }
+    let c = generate_candid(args.last().unwrap())?;
     println!("{c}");
     Ok(())
 }

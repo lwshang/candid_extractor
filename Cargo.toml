@@ -7,7 +7,12 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.72"
-wasmtime = "11.0.1"
+wasmtime = "12"
 
-[workspace]
-members = ["canister"]
+[dev-dependencies]
+quote = "1"
+syn = { version = "2", features = ["parsing", "full", "extra-traits"] }
+
+[[example]]
+name = "gen_mock_wat"
+path = "util/generate_mock_wat.rs"
